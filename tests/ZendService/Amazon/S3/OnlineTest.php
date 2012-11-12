@@ -11,7 +11,7 @@
 namespace ZendServiceTest\Amazon\S3;
 
 use ZendService\Amazon\S3;
-use ZendService\Amazon\S3\Exception;
+use ZendService\Amazon\S3\Exception\InvalidArgumentException;
 use Zend\Http\Response;
 
 /**
@@ -362,7 +362,7 @@ class OnlineTest extends \PHPUnit_Framework_TestCase
     public function testCreateBucketWithBadName()
     {
         $this->setExpectedException(
-            'ZendService\Amazon\Sqs\Exception\InvalidArgumentException',
+            'InvalidArgumentException',
             'Bucket name "This is a Very Bad Name" contains invalid characters');
         $this->_amazon->createBucket("This is a Very Bad Name");
     }
@@ -378,7 +378,7 @@ class OnlineTest extends \PHPUnit_Framework_TestCase
     public function testPutObjectWithBadName()
     {
         $this->setExpectedException(
-            'ZendService\Amazon\Sqs\Exception\InvalidArgumentException',
+            'InvalidArgumentException',
             'Bucket name "This is a Very Bad Name" contains invalid characters');
         $this->_amazon->putObject("This is a Very Bad Name/And It Gets Worse", "testdata");
     }
@@ -386,7 +386,7 @@ class OnlineTest extends \PHPUnit_Framework_TestCase
     public function testGetObjectWithBadName()
     {
         $this->setExpectedException(
-            'ZendService\Amazon\Sqs\Exception\InvalidArgumentException',
+            'InvalidArgumentException',
             'Bucket name "This is a Very Bad Name" contains invalid characters');
         $this->_amazon->getObject("This is a Very Bad Name/And It Gets Worse");
     }
@@ -394,7 +394,7 @@ class OnlineTest extends \PHPUnit_Framework_TestCase
     public function testGetInfoWithBadName()
     {
         $this->setExpectedException(
-            'ZendService\Amazon\Sqs\Exception\InvalidArgumentException',
+            'InvalidArgumentException',
             'Bucket name "This is a Very Bad Name" contains invalid characters');
         $this->_amazon->getInfo("This is a Very Bad Name/And It Gets Worse");
     }
@@ -402,7 +402,7 @@ class OnlineTest extends \PHPUnit_Framework_TestCase
     public function testSetEndpointWithBadName()
     {
         $this->setExpectedException(
-            'ZendService\Amazon\Sqs\Exception\InvalidArgumentException',
+            'InvalidArgumentException',
             'Invalid endpoint supplied');
         $this->_amazon->setEndpoint("This is a Very Bad Name/And It Gets Worse");
     }
@@ -410,7 +410,7 @@ class OnlineTest extends \PHPUnit_Framework_TestCase
     public function testBucketNameIsTooShort()
     {
         $this->setExpectedException(
-            'ZendService\Amazon\Sqs\Exception\InvalidArgumentException',
+            'InvalidArgumentException',
             sprintf('Bucket name "%s" must be between 3 and 255 characters long', 'xx'));
         $this->_amazon->createBucket('xx');
     }
@@ -419,7 +419,7 @@ class OnlineTest extends \PHPUnit_Framework_TestCase
     {
         $bucketName = str_repeat('x', 256);
         $this->setExpectedException(
-            'ZendService\Amazon\Sqs\Exception\InvalidArgumentException',
+            'InvalidArgumentException',
             sprintf('Bucket name "%s" must be between 3 and 255 characters long', $bucketName));
         $this->_amazon->createBucket($bucketName);
     }
@@ -482,7 +482,7 @@ class OnlineTest extends \PHPUnit_Framework_TestCase
     public function testBucketIPMaskException()
     {
         $this->setExpectedException(
-            'ZendService\Amazon\Sqs\Exception\InvalidArgumentException',
+            'InvalidArgumentException',
             'Bucket name "127.0.0.1" cannot be an IP address');
         $this->_amazon->createBucket("127.0.0.1");
     }
@@ -496,7 +496,7 @@ class OnlineTest extends \PHPUnit_Framework_TestCase
     {
         try {
             $this->_amazon->createBucket("127.0.0.1");
-        } catch(\ZendService\Amazon\Sqs\Exception\InvalidArgumentException $e) {
+        } catch(InvalidArgumentException $e) {
             $this->_amazon->createBucket("123-456-789-123");
             $this->assertTrue($this->_amazon->isBucketAvailable("123-456-789-123"));
             $this->_amazon->removeBucket("123-456-789-123");
