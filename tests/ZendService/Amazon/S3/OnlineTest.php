@@ -70,7 +70,7 @@ class OnlineTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateBucket()
     {
-        $this->_amazon->createBucket($this->_bucket);
+        $this->assertTrue($this->_amazon->createBucket($this->_bucket));
         $this->assertTrue($this->_amazon->isBucketAvailable($this->_bucket));
         $list = $this->_amazon->getBuckets();
         $this->assertContains($this->_bucket, $list);
