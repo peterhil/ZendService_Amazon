@@ -411,16 +411,16 @@ class OnlineTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            sprintf('Bucket name "%s" must be between 3 and 255 characters long', 'xx'));
+            sprintf('Bucket name "%s" must be between 3 and 63 characters long', 'xx'));
         $this->_amazon->createBucket('xx');
     }
 
     public function testBucketNameIsTooLong()
     {
-        $bucketName = str_repeat('x', 256);
+        $bucketName = str_repeat('x', 64);
         $this->setExpectedException(
             'InvalidArgumentException',
-            sprintf('Bucket name "%s" must be between 3 and 255 characters long', $bucketName));
+            sprintf('Bucket name "%s" must be between 3 and 63 characters long', $bucketName));
         $this->_amazon->createBucket($bucketName);
     }
 
@@ -467,7 +467,7 @@ class OnlineTest extends \PHPUnit_Framework_TestCase
     {
         $endpoint = $this->_amazon->getEndpoint();
         $this->_amazon->setEndpoint('https://s3.amazonaws.com');
-        $this->assertEquals('https://s3.amazonaws.com', $this->_amazon->getEndpoint()->generate());
+        $this->assertEquals('https://s3.amazonaws.com', $this->_amazon->getEndpoint()->toString());
         $this->_amazon->createBucket($this->_bucket);
         $this->_amazon->putObject($this->_bucket."/zftest", "testdata");
         $this->assertEquals("testdata", $this->_amazon->getObject($this->_bucket."/zftest"));
