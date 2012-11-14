@@ -250,9 +250,9 @@ class OnlineTest extends \PHPUnit_Framework_TestCase
 
         // otherwise amazon sends cached data
         sleep(3);
-        $this->assertFalse($this->_amazon->isBucketAvailable($this->_bucket));
-        $this->assertFalse($this->_amazon->isObjectAvailable($this->_bucket."/zftest"));
-        $this->assertFalse($this->_amazon->getObjectsByBucket($this->_bucket));
+        $this->assertFalse($this->_amazon->isObjectAvailable($this->_bucket."/zftest"), "Object shouldn't be available.");
+        $this->assertFalse($this->_amazon->getObjectsByBucket($this->_bucket), "Bucket should be empty.");
+        $this->assertFalse($this->_amazon->isBucketAvailable($this->_bucket), "Bucket shouldn't be available.");
         $list = $this->_amazon->getBuckets();
         $this->assertNotContains($this->_bucket, $list);
     }
