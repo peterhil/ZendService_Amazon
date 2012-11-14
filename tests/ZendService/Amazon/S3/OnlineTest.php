@@ -99,19 +99,40 @@ class OnlineTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsBucketAvailable()
     {
-        $this->assertFalse(
-            $this->_amazon->isBucketAvailable($this->_bucket),
-            "Bucket should not be available before it's created."
-        );
-        $this->assertTrue(
-            $this->_amazon->createBucket($this->_bucket),
-            "Creating bucket should work."
-        );
-        $this->assertTrue(
-            $this->_amazon->isBucketAvailable($this->_bucket),
-            "Bucket should now be available."
-        );
+        $bucket = uniqid('zftest.isbucketavailable-temp-', true);
+        $failed = false;
 
+        try {
+            $this->assertFalse(
+                $this->_amazon->isBucketAvailable($bucket),
+                "Bucket should not be available before it's created."
+            );
+
+            $this->assertTrue(
+                $this->_amazon->createBucket($bucket),
+                "Creating bucket should work."
+            );
+
+            $this->assertTrue(
+                $this->_amazon->isBucketAvailable($bucket),
+                "Bucket should now be available."
+            );
+        } catch (\PHPUnit_Framework_AssertionFailedError $e) {
+            $failed = true;
+        }
+
+        $this->removeBucket($bucket);
+
+        if ($failed) {
+            $this->fail($e->getMessage());
+        }
+    }
+
+    /**
+     * Test nonexisting bucket availability
+     */
+    public function testIsNonexistingBucketAvailable()
+    {
         $this->assertFalse(
             $this->_amazon->isBucketAvailable(uniqid('zftest.nonexisting-', true)),
             "That bucket really shouldn't exist."
@@ -571,7 +592,12 @@ class OnlineTest extends \PHPUnit_Framework_TestCase
             return;
         }
         unset($this->_amazon->debug);
-        $this->_amazon->cleanBucket($this->_bucket);
-        $this->_amazon->removeBucket($this->_bucket);
+        $this->removeBucket($this->_bucket);
+    }
+
+    private function removeBucket($bucket)
+    {
+        $this->_amazon->cleanBucket($bucket);
+        $this->_amazon->removeBucket($bucket);
     }
 }
