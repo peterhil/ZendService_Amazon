@@ -59,9 +59,6 @@ class OnlineTest extends \PHPUnit_Framework_TestCase
 
         $this->_amazon->getHttpClient()
                       ->setAdapter($this->_httpClientAdapterSocket);
-
-        // terms of use compliance: no more than one query per second
-        sleep(1);
     }
 
     /**
@@ -270,7 +267,7 @@ class OnlineTest extends \PHPUnit_Framework_TestCase
         $this->_amazon->removeBucket($this->_bucket);
 
         // otherwise amazon sends cached data
-        sleep(5);
+        sleep(2);
         $this->assertFalse($this->_amazon->isObjectAvailable($this->_bucket."/zftest"), "Object shouldn't be available.");
         $this->assertFalse($this->_amazon->getObjectsByBucket($this->_bucket), "Bucket should be empty.");
         $this->assertFalse($this->_amazon->isBucketAvailable($this->_bucket), "Bucket shouldn't be available.");
@@ -291,6 +288,7 @@ class OnlineTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->_amazon->isObjectAvailable($object));
 
         $info = $this->_amazon->getInfo($object);
+
         $this->assertEquals('"'.md5_file($filename).'"', $info["etag"]);
         $this->assertEquals(filesize($filename), $info["size"]);
         $this->assertEquals($exp_type, $info["type"]);
