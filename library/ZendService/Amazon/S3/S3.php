@@ -653,21 +653,7 @@ class S3 extends \ZendService\Amazon\AbstractAmazon
             throw new Exception\InvalidArgumentException("Only PUT request supports stream data");
         }
 
-        // build the end point out
-        $parts = explode('/', $path, 2);
-        $endpoint = clone($this->_endpoint);
-        if ($parts[0]) {
-            // prepend bucket name to the hostname
-            $endpoint->setHost($parts[0].'.'.$endpoint->getHost());
-        }
-        if (!empty($parts[1])) {
-            $endpoint->setPath('/'.$parts[1]);
-        } else {
-            $endpoint->setPath('/');
-            if ($parts[0]) {
-                $path = $parts[0].'/';
-            }
-        }
+        list($endpoint, $path) = $this->_buildEndPoint($path);
 
         $client = $this->getHttpClient();
         $client->resetParameters();
@@ -721,6 +707,25 @@ class S3 extends \ZendService\Amazon\AbstractAmazon
         } while ($retry);
 
         return $this->lastResponse;
+    }
+
+    private function _buildEndPoint($path='')
+    {
+        $parts = explode('/', $path, 2);
+        $endpoint = clone($this->_endpoint);
+        if ($parts[0]) {
+            // prepend bucket name to the hostname
+            $endpoint->setHost($parts[0].'.'.$endpoint->getHost());
+        }
+        if (!empty($parts[1])) {
+            $endpoint->setPath('/'.$parts[1]);
+        } else {
+            $endpoint->setPath('/');
+            if ($parts[0]) {
+                $path = $parts[0].'/';
+            }
+        }
+        return array($endpoint, $path);
     }
 
     /**
